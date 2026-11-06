@@ -1,0 +1,9 @@
+# Mechanistic formula specification only; not an executable patch.
+schema_version: "0.1-draft"
+status: planned
+layers: [15, 19]
+target_tensor_suffix: "mlp.down_proj.weight"
+selected_columns_per_layer: 64
+alpha: 6.0
+operator: "W' = W - alpha * u * (mask * (u^T W))"
+note: "Columns, direction, and masks must be discovered or verified; absent here by design."
