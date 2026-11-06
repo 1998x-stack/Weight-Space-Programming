@@ -38,3 +38,9 @@ R2-D1 engineering gate: authentic model loaded and produced four genuine token t
 ## Execution log
 
 To be added from real GitHub Actions outputs only; synthetic tests do not meet the engineering gate.
+
+## Actual first run (96-token cap), 2026-11-06
+
+[GitHub Actions #42202034957](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42202034957) **success**. Official model with both pinned base-target hashes; 4/4 real greedy generations. **All 4 hit the 96-token cap**, 0/4 consecutive 3-copy token motif candidates, 3/4 contain a literal boxed marker. There are 0 independently verified productive/repetitive pairs. Raw output and token IDs: [artifact #13494278499](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42202034957/artifacts/13494278499); traces.json 11,202 bytes, SHA256 5b5f57f8b2690b563d704381fc07ffe7ca6b78b69bb7e13dd4dbcd1e94baf598.
+
+These observations are not a task correctness evaluation. The 96-token budget is a strong censoring confound. The workflow is therefore updated to run a **same-prompt 256-token exploratory sensitivity check**, maintaining otherwise identical greedy settings. Report it separately; no claims that the edit caused improvement or that non-repetition is established.
