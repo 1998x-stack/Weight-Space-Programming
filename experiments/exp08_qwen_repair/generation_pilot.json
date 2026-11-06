@@ -1,0 +1,21 @@
+{
+  "split": "diagnostic",
+  "prompts": [
+    {
+      "id": "arithmetic-a",
+      "prompt": "Solve this arithmetic carefully: 17 + 26. Show a short calculation and put your final answer in \\boxed{}."
+    },
+    {
+      "id": "arithmetic-b",
+      "prompt": "Compute 84 divided by 7. Explain your result briefly, then put your final answer in \\boxed{}."
+    },
+    {
+      "id": "arithmetic-c",
+      "prompt": "Find the value of 9 times 7. Use clear reasoning and finish with \\boxed{}."
+    },
+    {
+      "id": "algebra-a",
+      "prompt": "Solve 3x + 5 = 20 for x. Show the steps and put the final value in \\boxed{}."
+    }
+  ]
+}

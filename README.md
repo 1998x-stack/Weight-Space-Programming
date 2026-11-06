@@ -1,7 +1,7 @@
 # Weight-Space Programming
 
 > **Research-first, evidence-driven, reproduction-ready.**  
-> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成；R2-A CPU 机制候选分析已实现；R2-B 工具已实现，R2-C 的官方 Qwen3.5 CPU forward smoke 已在 GitHub Actions 实际成功（Layer 15、四对手工诊断输入，非机制复现）**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
+> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成；R2-A CPU 机制候选分析已实现；R2-B 工具已实现，R2-C 官方 Qwen CPU forward smoke 已真实成功；R2-D1 两轮真实自回归生成（96/256 Token）已在官方模型 CPU 上执行成功，包含保守重复检测和可核验前缀对照（不等于机制复现）**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
 
 [研究文档](docs/index.md) · [原始研究与证据](docs/02-original-study/source-audit.md) · [复现路线](docs/05-reproduction/roadmap.md) · [系统架构](docs/06-architecture/system.md) · [开发里程碑](docs/07-roadmap/milestones.md)
 
@@ -140,3 +140,9 @@ R0/R2/R3/R4 的通用工程目标仍未完成；**R1 真实补丁已重建，但
 ---
 
 **Status:** R1 official tensor replay verified; R2-A/R2-B implemented; R2-C genuine official Qwen fixed-input Layer-15 forward smoke verified (Actions #42200064239); R1 GPU benchmark and R2 scientific rediscovery not completed · **Last reviewed:** 2026-11-06.
+
+
+R2-D1 真实生成轨迹和保守故障分类：[执行协议](docs/05-reproduction/r2d-generation-pilot.md)；R1 GPU 全量数学评测与 R2 科学机制重新发现尚未完成。
+
+
+[R2-D1 真实执行与 Token 上限对照审计](docs/05-reproduction/r2d-run-20261106.md)；复用对照命令：scripts/r2d_compare_budgets.py。

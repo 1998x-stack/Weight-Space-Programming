@@ -25,3 +25,7 @@
 
 ## 项目状态
 R1 更新：公开 Qwen p50c 补丁已在 GitHub Actions 上对官方权重实际校验成功（[运行证据](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42187045405)）；R1 MATH-500 GPU benchmark 尚未执行。R2-A 的 CPU 机制候选工具已实现并通过合成测试，但真实 Qwen activation probing、因果实验与 R2 研究门禁均未完成。详细请见 [R2-A 离线工具说明](05-reproduction/r2-offline-implementation.md) 和 [R2-B Qwen 探针与干预实现](05-reproduction/r2b-activation-probe.md)、[R2-C 官方模型诊断 Smoke](05-reproduction/r2c-real-smoke.md)；后者已实现工具代码，但未验证真实 Qwen forward 或科学复现。其余模块仍保留占位。
+
+R2-D1: [真实模型生成轨迹与保守重复检测](05-reproduction/r2d-generation-pilot.md)。
+
+R2-D1 real evidence: [96 vs 256 Token execution audit](05-reproduction/r2d-run-20261106.md).
