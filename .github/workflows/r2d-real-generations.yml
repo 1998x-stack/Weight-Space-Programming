@@ -1,0 +1,78 @@
+name: R2-D authentic Qwen diagnostic generations
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/r2d-real-generations.yml"
+      - "scripts/r2d_generate.py"
+      - "src/wsp/evaluate/trace_generation.py"
+      - "src/wsp/repair/failure_classifier.py"
+      - "experiments/exp08_qwen_repair/generation_pilot.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  official-greedy-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install CPU torch, pinned model loader and project
+        run: |
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e .
+          python -m pip install "transformers>=5.0,<6" "huggingface_hub>=0.35,<2" "accelerate>=1,<2" pillow
+      - name: Get official fixed Qwen revision
+        run: |
+          python - <<'PY'
+          from huggingface_hub import snapshot_download
+          snapshot_download(
+              repo_id="Qwen/Qwen3.5-0.8B",
+              revision="2fc06364715b967f1860aea9cf38778875588b17",
+              local_dir="/tmp/wsp-r2d/base",
+              allow_patterns=["*.safetensors","*.json","*.jinja","*.model","*.txt"],
+          )
+          PY
+      - name: Real autoregressive diagnostic generation (bounded)
+        run: |
+          python scripts/r2d_generate.py \
+            --model /tmp/wsp-r2d/base \
+            --prompts experiments/exp08_qwen_repair/generation_pilot.json \
+            --out /tmp/wsp-r2d/traces.json \
+            --max-new-tokens 96 --max-input-tokens 160 \
+            --device cpu --confirm-compute
+      - name: Assert genuine token traces and conservative diagnostics
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("/tmp/wsp-r2d/traces.json").read_text())
+          assert x["status"] == "real_model_generated_diagnostic_traces_no_scientific_loop_claim"
+          assert x["summary"]["prompts"] == 4
+          assert len(x["provenance"]["base_target_bf16_sha256"]) == 2
+          assert x["summary"]["scientific_gate_r2_passed"] is False
+          assert x["summary"]["independently_labelled_productive_repetitive_pairs"] == 0
+          for r in x["records"]:
+              assert r["generated_token_ids"]
+              assert r["generated_text_sha256"]
+              assert len(r["generated_token_ids"]) == r["classification"]["generated_tokens"]
+              assert r["classification"]["accuracy"] is None
+          print("Official model generated 4 real diagnostic traces; no R2 mechanism claim.")
+          PY
+      - name: Upload bounded arithmetic diagnostic generations (no model weights)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2d-actual-diagnostic-generation-traces
+          path: /tmp/wsp-r2d/traces.json
+          retention-days: 14
