@@ -68,3 +68,21 @@ def test_token_length_fail_closed():
 def test_invalid_layer_index_does_not_access_model():
     with pytest.raises(ProbeError, match="15 and 19"):
         resolve_layer(None, 3)
+
+
+def test_official_preflight_rejects_missing_weights(tmp_path):
+    from wsp.adapters.qwen import inspect_official_base
+    (tmp_path / "config.json").write_text(json.dumps({
+        "text_config": {"hidden_size": 1024,
+                        "intermediate_size": 3584, "num_hidden_layers": 24}}))
+    with pytest.raises(ProbeError, match="Missing model.safetensors"):
+        inspect_official_base(tmp_path)
+
+
+def test_official_preflight_rejects_wrong_topology(tmp_path):
+    from wsp.adapters.qwen import inspect_official_base
+    (tmp_path / "config.json").write_text(json.dumps({
+        "text_config": {"hidden_size": 1025,
+                        "intermediate_size": 3584, "num_hidden_layers": 24}}))
+    with pytest.raises(ProbeError, match="Wrong pinned"):
+        inspect_official_base(tmp_path)

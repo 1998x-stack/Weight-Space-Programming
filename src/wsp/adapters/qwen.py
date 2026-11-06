@@ -9,7 +9,7 @@ from pathlib import Path
 
 from wsp.repair.replay import (
     EXPECTED_HASHES, EXPECTED_NAMES, EXPECTED_SHAPE, MODEL_REVISION,
-    _read_bits, _shards, sha256,
+    _read_bits, _shards, sha256, ReplayError,
 )
 
 
@@ -54,14 +54,19 @@ def inspect_official_base(model_dir: str | Path) -> dict:
         shards = _shards(model_dir)
         results = {}
         for name in EXPECTED_NAMES:
-            if name not in shards:
-                raise ProbeError(f"Missing target tensor: {name}")
-            bits = _read_bits(shards[name], name)
+            # Text-only exports can use the model.layers rather than
+            # model.language_model.layers namespace.
+            aliases = (name, name.replace("model.language_model.", "model."))
+            available = [alias for alias in aliases if alias in shards]
+            if len(available) != 1:
+                raise ProbeError(f"Missing or ambiguous target tensor: {name}")
+            resolved = available[0]
+            bits = _read_bits(shards[resolved], resolved)
             actual = sha256(bits.astype("<u2", copy=False).tobytes(order="C"))
             if actual != EXPECTED_HASHES[name][0]:
                 raise ProbeError(f"Not the published BF16 base tensor: {name}")
             results[name] = actual
-    except (OSError, KeyError, TypeError, IndexError, json.JSONDecodeError) as exc:
+    except (ReplayError, OSError, KeyError, TypeError, IndexError, json.JSONDecodeError) as exc:
         raise ProbeError(f"Official base inspection failed: {exc}") from exc
     return {"revision_declared": MODEL_REVISION, "base_target_bf16_sha256": results,
             "attestation_scope": "two_target_tensors_only_not_complete_model"}
