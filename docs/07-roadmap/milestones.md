@@ -12,6 +12,8 @@
 门禁：hash mismatch 必须失败关闭；给出真实本地审计日志。
 
 ## M02 — R1: Faithful Replay
+
+**进展（2026-11-06）：** 已实现 BF16 稀疏 patch 的独立重建器、p50c 固定哈希校验、MATH-500 GPU 入口、按题目配对统计及 CPU 单元测试（合成数据）。真实 Qwen 权重未在此执行环境下载/重建，完整 benchmark 未运行；**R1 尚未达到最终验收门禁**。
 文件：src/wsp/adapters/qwen.py, src/wsp/evaluate/{benchmark,paired_statistics}.py, scripts/；测试：tests/integration/、tests/regression/。  
 任务：原始/修改后 checkpoint 重建、采样复现、逐题评测、统计 CI、解码因子表。  
 门禁：报告 config hash、per-problem paired changes、环境差异；不得仅写“接近作者”就宣布全量重现。

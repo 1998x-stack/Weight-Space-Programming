@@ -22,6 +22,11 @@ EXPECTED_NAMES = (
 )
 EXPECTED_SHAPE = (1024, 3584)
 EXPECTED_TOTAL = 130188
+# Pinned from the author's public exp8_math/runs/p50c/edit/manifest.json.
+EXPECTED_HASHES = {
+    EXPECTED_NAMES[0]: ("ef60d2c687bab19464dca9c8bfd7777e46ad226df0c9e25643b0bab04b5a1cca", "82e2d733ea64feaeb4af93a1e065641d3df98b494a8b7576ef2f52e90fe2ee53"),
+    EXPECTED_NAMES[1]: ("638eedeb701b94aa861f4438e615c07ec6c60ee703db1bfee2de577bb6498c3e", "8ef3c61bc36af113ad58e89dbb0a4a14dcba5a45cb750c15ab515c82ddd12eb2"),
+}
 MODEL_REVISION = "2fc06364715b967f1860aea9cf38778875588b17"
 
 
@@ -116,6 +121,8 @@ def _check_manifest(man: dict[str, Any], strict: bool) -> list[dict[str, Any]]:
             h = r.get(key, "")
             if not isinstance(h, str) or len(h) != 64 or any(c not in "0123456789abcdef" for c in h):
                 raise ReplayError(f"Invalid {key} for {r['name']}")
+        if strict and (r["base_sha256"], r["edited_sha256"]) != EXPECTED_HASHES[r["name"]]:
+            raise ReplayError("Published p50c tensor SHA mismatch")
         total += int(r["changed_entries"])
         if strict and int(r["changed_columns"]) != 64:
             raise ReplayError("Unexpected column count")
