@@ -1,8 +1,8 @@
 # Experiment 8: Replay and rediscover Qwen repetition edit
 
 **Category:** REPAIR  
-**Implementation:** NOT STARTED  
-**Status:** Research design and traceability placeholder only.
+**Implementation:** R1 real p50c checkpoint SHA replay passed; independent mathematical benchmark not run  
+**Status:** R1 replay code completed; checkpoint SHA verified on official Qwen weights, remaining experiment components planned. See docs/05-reproduction/r1-implementation.md.
 
 ## Original evidence
 [Author's Experiment 8 log directory](https://github.com/RikiyaT/lm_understand-logs/tree/main/exp8_math)  

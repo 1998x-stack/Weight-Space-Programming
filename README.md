@@ -1,7 +1,7 @@
 # Weight-Space Programming
 
 > **Research-first, evidence-driven, reproduction-ready.**  
-> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前版本 **v0.1 — documentation & scaffolding only**；没有实现训练、推理、权重编辑，也没有声称复现成功。
+> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
 
 [研究文档](docs/index.md) · [原始研究与证据](docs/02-original-study/source-audit.md) · [复现路线](docs/05-reproduction/roadmap.md) · [系统架构](docs/06-architecture/system.md) · [开发里程碑](docs/07-roadmap/milestones.md)
 
@@ -58,12 +58,12 @@ Weight-Space Programming（WSP）指通用语言模型围绕自然语言目标�
 | [阶段里程碑](docs/07-roadmap/milestones.md) | 文件级任务清单与验收 |
 | [原始链接](docs/references/sources.md) | Blog、代码、论文、模型卡和讨论 |
 
-## 4. Planned repository layout (placeholders only)
+## 4. Repository layout (R1 utilities plus future placeholders)
 
 ```text
 Weight-Space-Programming/
 ├── README.md
-├── pyproject.toml                 # package metadata only; no runtime
+├── pyproject.toml                 # R1 CPU dependency + optional dev tooling
 ├── CONTRIBUTING.md
 ├── .gitignore
 ├── docs/
@@ -79,31 +79,45 @@ Weight-Space-Programming/
 ├── src/wsp/
 │   ├── core/                     # 模型注册、预算、类型
 │   ├── read/                     # 权重检查、层归因、表示读取
-│   ├── repair/                   # 故障分类、候选补丁、约束
+│   ├── repair/                   # replay.py 已实现 BF16 p50c 补丁；其他模块占位
 │   ├── synthesize/               # 规则→神经网络的编译设计
-│   ├── evaluate/                 # 配对基线、统计与副作用
+│   ├── evaluate/                 # paired_statistics.py / math500.py 已实现
 │   ├── agents/                   # 实验决策与可审计轨迹
 │   ├── adapters/                 # Transformer/RL/扩散模型适配
 │   └── artifacts/                # 补丁清单、不可变记录
 ├── experiments/                  # exp01–exp08 设计占位
 ├── schemas/                      # 契约规范占位
-├── tests/                        # 单测/集成/回归/基准占位
-└── scripts/                      # 未来复现命令占位
+├── tests/                        # R1 CPU 单元测试 + 后续测试占位
+└── scripts/                      # r1.py / r1_math500.py / r1_prepare_math500.py
 ```
 
-**当前仓库承诺：** 所有 `src/` Python 文件仅含 docstring / TODO 或占位声明，不加载真实模型、不执行编辑、不访问网络。 `experiments/` 是计划而非已运行结果；无宣称已通过的 CI/Benchmark。
+**实现状态：** R1 CPU replay/paired statistics 已通过合成数据单元测试；真实 Qwen p50c 重建与张量哈希经 GitHub Actions 验证；GPU runner 已编写但尚未运行。除这三个 R1 模块之外，其他 src/ 子包仍是占位。没有训练、Agent、自主权重发现实现。
+
+## R1 Quickstart (separate CPU replay and GPU benchmark)
+
+Use the exact upstream manifest and model revision. This pipeline has passed synthetic CPU tests **and** a real official-checkpoint p50c SHA replay in GitHub Actions; the MATH-500 numerical reproduction still requires a GPU run. [Detailed R1 protocol](docs/05-reproduction/r1-implementation.md).
+
+1. Install CPU requirements: `python -m pip install -e '.[dev]'`.
+2. Obtain `Qwen/Qwen3.5-0.8B` revision `2fc06364715b967f1860aea9cf38778875588b17` and `RikiyaT/lm_understand-logs/exp8_math/runs/p50c/edit/` from their official sources.
+3. Replay: `python scripts/r1.py replay --base /models/qwen35 --edit /sources/lm_understand-logs/exp8_math/runs/p50c/edit --out /models/qwen35-p50c`.
+4. After preparing the pinned MATH-500 dataset and installing a compatible GPU environment, run `scripts/r1_math500.py` separately for base and edited checkpoints.
+5. Compare: `python scripts/r1.py compare --base /runs/base/math500_per_problem.json --edited /runs/edited/math500_per_problem.json --samples 4`.
+
+Actual official-weight SHA replay: [GitHub Actions run #42187045405](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42187045405) (success; audit artifact only, no weight uploads). MATH-500 was not run.
+
+Run only CPU unit tests with `python -m pytest -q tests/unit`. No GPU, weight download or model edit is performed by this test command.
 
 ## 5. Reproduction ladder
 
 | Gate | 目标 | 完成定义 |
 |---|---|---|
 | **R0 Evidence** | 核对博客、日志、模型卡及文件哈希 | 数据源索引、证据登记和差异说明 |
-| **R1 Replay** | 复用公开补丁与基线跑原始评测 | 精确权重/配置、逐题结果与置信区间 |
+| **R1 Replay** | 真实官方权重补丁 SHA 校验已成功；GPU MATH-500 仍待运行 | 精确权重/配置、逐题结果与置信区间 |
 | **R2 Rediscover** | 重算重复方向、定位层和 Top-64 | 方向相似度、层归因、单层及随机消融 |
 | **R3 Agent** | 受预算约束的自动发现系统 | 独立盲测、多次运行、失败可报告 |
 | **R4 Generalize** | Gemma、其他模型和真实局部故障 | 与采样/LoRA/无编辑方案比较，跨任务回归 |
 
-当前均为 **planned / not implemented / not evaluated**。详情：[复现路线](docs/05-reproduction/roadmap.md) 与 [验收标准](docs/07-roadmap/milestones.md)。
+R0/R2/R3/R4 的通用工程目标仍未完成；**R1 真实补丁已重建，但基准评测门禁尚未通过**。详情：[复现路线](docs/05-reproduction/roadmap.md) 与 [验收标准](docs/07-roadmap/milestones.md)。
 
 ## 6. Evidence policy
 
@@ -117,7 +131,7 @@ Weight-Space-Programming/
 - Zou et al. (2023), [Representation Engineering](https://arxiv.org/abs/2310.01405)；Park et al. (2024), [Linear Representation Hypothesis](https://proceedings.mlr.press/v235/park24c.html)。
 - Qwen 官方 [model card](https://huggingface.co/Qwen/Qwen3.5-0.8B)。
 
-本仓库不提供官方模型权重，也不会在没有执行验证的情况下发布“复现成功”的说明。
+本仓库不提供官方模型权重，也不会在没有执行验证的情况下发布“复现成功”的说明。R1 的明确运行说明见 [R1 Implementation](docs/05-reproduction/r1-implementation.md)。
 
 ## 7. How to contribute
 
@@ -125,4 +139,4 @@ Weight-Space-Programming/
 
 ---
 
-**Status:** v0.1 specification / skeleton · **Last reviewed:** 2026-11-06 · **No training or inference implemented.**
+**Status:** R1 exact published tensor replay verified on official Qwen weights; full GPU benchmark not yet run · **Last reviewed:** 2026-11-06.
