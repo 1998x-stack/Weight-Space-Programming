@@ -19,6 +19,8 @@
 门禁：报告 config hash、per-problem paired changes、环境差异；不得仅写“接近作者”就宣布全量重现。
 
 ## M03 — R2: Mechanistic Rediscovery
+
+**R2-A CPU engineering progress (2026-11-06):** implemented contrastive-direction estimation, leave-one-pair-out stability, signed MLP neuron ranking, descriptive layer alignment, in-memory masked projection proposals, diagnostic-only NPZ CLI and synthetic unit tests. See [R2-A runbook](../05-reproduction/r2-offline-implementation.md). **No real teacher-forced Qwen probes, causal forward interventions or R2 scientific gate have been completed.**
 文件：src/wsp/read/{activation_probe,contrastive_direction,layer_attribution,neuron_score}.py, src/wsp/repair/{sparse_edit,validator}.py。  
 任务：4 组以上对照、层/MLP 归因、Top-K、α 扫描、随机方向对照、BF16 距离比较。  
 门禁：候选选择不泄漏作者最终掩码和 holdout；控制组审计齐全。
