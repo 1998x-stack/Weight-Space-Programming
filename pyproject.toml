@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "weight-space-programming-lab"
+version = "0.1.0"
+description = "Documentation-only research blueprint and placeholder modules for Weight-Space Programming"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "1998x-stack contributors" }]
+dependencies = []
+
+# No project license selected at v0.1; do not infer rights from the upstream study.
+
+[tool.setuptools.packages.find]
+where = ["src"]

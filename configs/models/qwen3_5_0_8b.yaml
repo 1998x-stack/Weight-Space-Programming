@@ -1,0 +1,8 @@
+# Documentation placeholder. No model will be fetched by this file.
+schema_version: "0.1-draft"
+status: planned
+model_id: Qwen/Qwen3.5-0.8B
+revision: 2fc06364715b967f1860aea9cf38778875588b17
+mode: text
+dtype: bfloat16
+note: "Exact original revision from author's exp8 README; runtime not implemented."

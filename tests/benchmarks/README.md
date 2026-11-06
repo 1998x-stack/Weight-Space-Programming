@@ -1,0 +1,3 @@
+# Performance and statistical benchmark plans
+
+**PLANNED — no tests have been implemented or run.** Future tests must state fixtures, deterministic seeds, failure cases, expected behavior and real command output. See docs/07-roadmap/milestones.md.
