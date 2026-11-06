@@ -20,6 +20,8 @@
 
 ## M03 — R2: Mechanistic Rediscovery
 
+**R2-B engineering progress (2026-11-06):** Qwen loader with strict published base-target SHA checks, real teacher-forced decoder/MLP hooks, diagnostic NPZ collector, fixed-token non-destructive MLP-output interventions and PyTorch synthetic integration tests. See [R2-B runbook](../05-reproduction/r2b-activation-probe.md). Authentic Qwen forward, independent contrast data and full R2 causal/benchmark validation remain pending.
+
 **R2-A CPU engineering progress (2026-11-06):** implemented contrastive-direction estimation, leave-one-pair-out stability, signed MLP neuron ranking, descriptive layer alignment, in-memory masked projection proposals, diagnostic-only NPZ CLI and synthetic unit tests. See [R2-A runbook](../05-reproduction/r2-offline-implementation.md). **No real teacher-forced Qwen probes, causal forward interventions or R2 scientific gate have been completed.**
 文件：src/wsp/read/{activation_probe,contrastive_direction,layer_attribution,neuron_score}.py, src/wsp/repair/{sparse_edit,validator}.py。  
 任务：4 组以上对照、层/MLP 归因、Top-K、α 扫描、随机方向对照、BF16 距离比较。  
