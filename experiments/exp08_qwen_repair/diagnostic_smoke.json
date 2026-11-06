@@ -1,0 +1,25 @@
+{
+  "split": "diagnostic",
+  "pairs": [
+    {
+      "id": "illustrative-addition",
+      "productive": "Problem: Calculate 17 plus 26. Reasoning: 17 plus 20 is 37, then add 6 to get 43. This completes the computation.",
+      "repetitive": "Problem: Calculate 17 plus 26. Reasoning: I should check the addition. I should check the addition again. I should check the addition again."
+    },
+    {
+      "id": "illustrative-subtraction",
+      "productive": "Problem: Calculate 52 minus 18. Reasoning: 52 minus 20 is 32, then add 2 to get 34. This completes the computation.",
+      "repetitive": "Problem: Calculate 52 minus 18. Reasoning: I need to revisit the subtraction. I need to revisit the subtraction again. I need to revisit the subtraction again."
+    },
+    {
+      "id": "illustrative-multiplication",
+      "productive": "Problem: Calculate 9 times 7. Reasoning: 9 times 5 is 45 and 9 times 2 is 18; together these make 63. Done.",
+      "repetitive": "Problem: Calculate 9 times 7. Reasoning: I should repeat the multiplication. I should repeat the multiplication again. I should repeat the multiplication again."
+    },
+    {
+      "id": "illustrative-division",
+      "productive": "Problem: Calculate 84 divided by 7. Reasoning: 7 times 12 is 84, so the quotient is 12. The calculation is complete.",
+      "repetitive": "Problem: Calculate 84 divided by 7. Reasoning: I need to double-check the division. I need to double-check the division again. I need to double-check the division again."
+    }
+  ]
+}
