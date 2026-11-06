@@ -1,6 +1,6 @@
 # 文件级复现代码逻辑设计：模块输入/输出与调用次序
 
-> 本文档定义 **proposed APIs**，不是已有 Python 实现。全部 Python 文件都是只含文档字符串的占位模块。未来实际 API 必须在实现 PR 中明确签名、错误模型、测试和资源成本。
+> 本文档多数仍为 **proposed APIs**。例外：R1 replay/benchmark/statistics，以及 R2-A 的 read/contrastive_direction.py、read/neuron_score.py、read/layer_attribution.py 和 repair/sparse_edit.py 已有有限的 CPU 实现。R2-A 仅处理预采集的 diagnostic 数组，不执行模型推理或 checkpoint 写入；详见 [R2-A runbook](../05-reproduction/r2-offline-implementation.md)。其他模块仍属占位，实际 API 以代码和测试为准。
 
 ## 1. 从静态阅读走向机制诊断
 | 文件 | 未来输入 | 未来输出 | 约束 |

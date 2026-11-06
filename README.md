@@ -1,7 +1,7 @@
 # Weight-Space Programming
 
 > **Research-first, evidence-driven, reproduction-ready.**  
-> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
+> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成；R2-A CPU 机制候选分析已实现（非实际模型再发现）**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
 
 [研究文档](docs/index.md) · [原始研究与证据](docs/02-original-study/source-audit.md) · [复现路线](docs/05-reproduction/roadmap.md) · [系统架构](docs/06-architecture/system.md) · [开发里程碑](docs/07-roadmap/milestones.md)
 
@@ -91,7 +91,7 @@ Weight-Space-Programming/
 └── scripts/                      # r1.py / r1_math500.py / r1_prepare_math500.py
 ```
 
-**实现状态：** R1 CPU replay/paired statistics 已通过合成数据单元测试；真实 Qwen p50c 重建与张量哈希经 GitHub Actions 验证；GPU runner 已编写但尚未运行。除这三个 R1 模块之外，其他 src/ 子包仍是占位。没有训练、Agent、自主权重发现实现。
+**实现状态：** R2-A 增加了纯 CPU 的 contrastive direction、neuron ranking、observational alignment、in-memory sparse proposal 与严格诊断输入 CLI；详见 [R2-A 实施与局限](docs/05-reproduction/r2-offline-implementation.md)。R2 真正的 Qwen 激活采集、干预、独立验证均未完成。R1 CPU replay/paired statistics 已通过合成数据单元测试；真实 Qwen p50c 重建与张量哈希经 GitHub Actions 验证；GPU runner 已编写但尚未运行。除这三个 R1 模块之外，其他 src/ 子包仍是占位。没有训练、Agent、自主权重发现实现。
 
 ## R1 Quickstart (separate CPU replay and GPU benchmark)
 
@@ -113,7 +113,7 @@ Run only CPU unit tests with `python -m pytest -q tests/unit`. No GPU, weight do
 |---|---|---|
 | **R0 Evidence** | 核对博客、日志、模型卡及文件哈希 | 数据源索引、证据登记和差异说明 |
 | **R1 Replay** | 真实官方权重补丁 SHA 校验已成功；GPU MATH-500 仍待运行 | 精确权重/配置、逐题结果与置信区间 |
-| **R2 Rediscover** | 重算重复方向、定位层和 Top-64 | 方向相似度、层归因、单层及随机消融 |
+| **R2 Rediscover** | CPU 候选估计代码已实现；真实机制发现仍待验证 | 方向相似度、层归因、单层及随机消融 |
 | **R3 Agent** | 受预算约束的自动发现系统 | 独立盲测、多次运行、失败可报告 |
 | **R4 Generalize** | Gemma、其他模型和真实局部故障 | 与采样/LoRA/无编辑方案比较，跨任务回归 |
 
@@ -139,4 +139,4 @@ R0/R2/R3/R4 的通用工程目标仍未完成；**R1 真实补丁已重建，但
 
 ---
 
-**Status:** R1 exact published tensor replay verified on official Qwen weights; full GPU benchmark not yet run · **Last reviewed:** 2026-11-06.
+**Status:** R1 exact published tensor replay verified on official Qwen weights; R2-A offline CPU candidate utilities implemented; full GPU benchmark and real R2 rediscovery not yet run · **Last reviewed:** 2026-11-06.
