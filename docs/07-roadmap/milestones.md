@@ -1,6 +1,6 @@
 # 分阶段交付与文件级验收
 
-当前完成：仅 v0.1 文档与占位文件结构。以下实质性功能 **均未实现或运行**。
+当前完成：v0.1 文档、占位结构和 R1 真实公开补丁重放工具链；[实际运行](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42187045405) 在指定 revision 官方模型上通过 SHA 验证。GPU MATH-500 未运行，R1 尚未最终验收。
 
 ## M00 — Evidence-First Documentation（本次）
 **交付：** README、理论/实验/负面结果/文献/知乎核查、复现协议、架构、模块分类、配置与占位目录。  
@@ -13,7 +13,7 @@
 
 ## M02 — R1: Faithful Replay
 
-**进展（2026-11-06）：** 已实现 BF16 稀疏 patch 的独立重建器、p50c 固定哈希校验、MATH-500 GPU 入口、按题目配对统计及 CPU 单元测试（合成数据）。真实 Qwen 权重未在此执行环境下载/重建，完整 benchmark 未运行；**R1 尚未达到最终验收门禁**。
+**进展（2026-11-06）：** 已实现 BF16 稀疏 patch 的独立重建器、p50c 固定哈希校验、MATH-500 GPU 入口、按题目配对统计及 CPU 单元测试（合成数据）。真实 Qwen 权重已在 GitHub Actions runner 下载并成功重建公开 p50c；完整 GPU benchmark 未运行；**R1 尚未达到最终验收门禁**。
 文件：src/wsp/adapters/qwen.py, src/wsp/evaluate/{benchmark,paired_statistics}.py, scripts/；测试：tests/integration/、tests/regression/。  
 任务：原始/修改后 checkpoint 重建、采样复现、逐题评测、统计 CI、解码因子表。  
 门禁：报告 config hash、per-problem paired changes、环境差异；不得仅写“接近作者”就宣布全量重现。

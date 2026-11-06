@@ -1,6 +1,6 @@
 # 从证据核验到自主复现：R0–R4 路线
 
-> 全部阶段当前为 **NOT STARTED**。本仓库只有接口/目录占位，不含可运行的实验。
+> 当前实际进展：R1 的公开补丁重放已在指定 revision 官方权重上 **成功执行与校验**；配对统计和 GPU 评测入口已实现，但 MATH-500 全量独立评测还没有运行，R1 最终验收**尚未完成**。R0/R2–R4 完整系统仍待实施。[执行日志](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42187045405)。
 
 ## R0 — Source Lock & Audit（先完成）
 输入：原始博客、作者 GitHub、原始模型卡、第三方复测。产物：source registry、commit/revision、实验指标对应文件与 license/数据权限清单。门禁：任何数字都有一手定位、同名指标的口径一致、标记缺失的 Harness 或 grader。这里不需 GPU。

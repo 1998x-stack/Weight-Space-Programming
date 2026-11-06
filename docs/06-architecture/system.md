@@ -1,6 +1,6 @@
 # 系统架构：从研究规范到可审计执行器
 
-本文件定义**未来架构契约**，不是已部署系统；当前 src/wsp 只有 docstring 占位。
+本文件定义**未来架构契约**，不是已部署系统；R1 已在 repair/replay.py、evaluate/paired_statistics.py 与 evaluate/math500.py 实现工具；其他核心系统仍以占位为主，未部署常驻服务或 Agent。
 
 ## 逻辑数据流
 

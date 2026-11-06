@@ -1,7 +1,7 @@
 # Weight-Space Programming
 
 > **Research-first, evidence-driven, reproduction-ready.**  
-> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 工具链实现、真实模型评测待验收**：已经实现 CPU BF16 补丁重建、哈希校验、配对统计和可在 GPU 环境运行的 MATH-500 评测入口；本次未完成真实 0.8B 模型评测，不能宣称 R1 全量复现成功。
+> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
 
 [研究文档](docs/index.md) · [原始研究与证据](docs/02-original-study/source-audit.md) · [复现路线](docs/05-reproduction/roadmap.md) · [系统架构](docs/06-architecture/system.md) · [开发里程碑](docs/07-roadmap/milestones.md)
 
@@ -91,17 +91,19 @@ Weight-Space-Programming/
 └── scripts/                      # r1.py / r1_math500.py / r1_prepare_math500.py
 ```
 
-**实现状态：** R1 CPU replay/paired statistics 已通过合成数据单元测试；GPU runner 已编写但未在真实 Qwen 上运行。除这三个 R1 模块之外，其他 src/ 子包仍是占位。没有训练、Agent、自主权重发现实现。
+**实现状态：** R1 CPU replay/paired statistics 已通过合成数据单元测试；真实 Qwen p50c 重建与张量哈希经 GitHub Actions 验证；GPU runner 已编写但尚未运行。除这三个 R1 模块之外，其他 src/ 子包仍是占位。没有训练、Agent、自主权重发现实现。
 
 ## R1 Quickstart (separate CPU replay and GPU benchmark)
 
-Use the exact upstream manifest and model revision. This pipeline **has been unit tested only with synthetic tensors**; the full MATH-500 reproduction requires external assets and GPU time. [Detailed R1 protocol](docs/05-reproduction/r1-implementation.md).
+Use the exact upstream manifest and model revision. This pipeline has passed synthetic CPU tests **and** a real official-checkpoint p50c SHA replay in GitHub Actions; the MATH-500 numerical reproduction still requires a GPU run. [Detailed R1 protocol](docs/05-reproduction/r1-implementation.md).
 
 1. Install CPU requirements: `python -m pip install -e '.[dev]'`.
 2. Obtain `Qwen/Qwen3.5-0.8B` revision `2fc06364715b967f1860aea9cf38778875588b17` and `RikiyaT/lm_understand-logs/exp8_math/runs/p50c/edit/` from their official sources.
 3. Replay: `python scripts/r1.py replay --base /models/qwen35 --edit /sources/lm_understand-logs/exp8_math/runs/p50c/edit --out /models/qwen35-p50c`.
 4. After preparing the pinned MATH-500 dataset and installing a compatible GPU environment, run `scripts/r1_math500.py` separately for base and edited checkpoints.
 5. Compare: `python scripts/r1.py compare --base /runs/base/math500_per_problem.json --edited /runs/edited/math500_per_problem.json --samples 4`.
+
+Actual official-weight SHA replay: [GitHub Actions run #42187045405](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42187045405) (success; audit artifact only, no weight uploads). MATH-500 was not run.
 
 Run only CPU unit tests with `python -m pytest -q tests/unit`. No GPU, weight download or model edit is performed by this test command.
 
@@ -110,12 +112,12 @@ Run only CPU unit tests with `python -m pytest -q tests/unit`. No GPU, weight do
 | Gate | 目标 | 完成定义 |
 |---|---|---|
 | **R0 Evidence** | 核对博客、日志、模型卡及文件哈希 | 数据源索引、证据登记和差异说明 |
-| **R1 Replay** | 已开发离线复建器及评测入口，真实 Checkpoint/GPU 运行待完成 | 精确权重/配置、逐题结果与置信区间 |
+| **R1 Replay** | 真实官方权重补丁 SHA 校验已成功；GPU MATH-500 仍待运行 | 精确权重/配置、逐题结果与置信区间 |
 | **R2 Rediscover** | 重算重复方向、定位层和 Top-64 | 方向相似度、层归因、单层及随机消融 |
 | **R3 Agent** | 受预算约束的自动发现系统 | 独立盲测、多次运行、失败可报告 |
 | **R4 Generalize** | Gemma、其他模型和真实局部故障 | 与采样/LoRA/无编辑方案比较，跨任务回归 |
 
-R0/R2/R3/R4 仍未实施；**R1 的代码已实现但真实模型评测尚未完成**。详情：[复现路线](docs/05-reproduction/roadmap.md) 与 [验收标准](docs/07-roadmap/milestones.md)。
+R0/R2/R3/R4 的通用工程目标仍未完成；**R1 真实补丁已重建，但基准评测门禁尚未通过**。详情：[复现路线](docs/05-reproduction/roadmap.md) 与 [验收标准](docs/07-roadmap/milestones.md)。
 
 ## 6. Evidence policy
 
@@ -137,4 +139,4 @@ R0/R2/R3/R4 仍未实施；**R1 的代码已实现但真实模型评测尚未完
 
 ---
 
-**Status:** R1 code implemented; full Qwen checkpoint and GPU benchmark not yet run · **Last reviewed:** 2026-11-06.
+**Status:** R1 exact published tensor replay verified on official Qwen weights; full GPU benchmark not yet run · **Last reviewed:** 2026-11-06.

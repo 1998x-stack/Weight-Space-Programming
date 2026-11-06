@@ -19,4 +19,4 @@
 - 后续如扩展到新模型，首先新增 adapter，而不是复制整个 Agent。
 
 ## 不实施任何隐含能力
-当前所有子包仅供导入定位，不提供训练执行器、模型下载器、推理 API、GPU 调度和编辑操作。若 future plugin 增加，应另行做权限评审。
+当前 R1 已实现 repair/replay.py 的离线稀疏 BF16 重建、evaluate/paired_statistics.py 和 evaluate/math500.py；真实 SHA 重建通过。其余子包仍是占位；无训练执行器、常驻服务或自动模型修复 Agent。若 future plugin 增加，应另行做权限评审。
