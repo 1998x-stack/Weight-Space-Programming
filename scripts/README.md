@@ -12,3 +12,5 @@ R1 已实现的命令入口：
 R2-B 新增 `r2_collect.py`：严格校验官方 Qwen BF16 原始目标哈希后，采集 teacher-forced diagnostic NPZ/manifest；`r2_intervene.py`：执行固定输入的 down_proj 输出方向消融和 next-token logits 对照。均要求 `--confirm-compute`，不写模型权重。详见 [R2-B 文档](../docs/05-reproduction/r2b-activation-probe.md)。尚未在真实 Qwen 权重运行这两个脚本。
 
 R2-D1：r2d_generate.py 对官方 Qwen 实际生成诊断轨迹，记录原始生成 Token、EOS/截断及独立的重复候选标识，要求显式 --confirm-compute。[运行说明](../docs/05-reproduction/r2d-generation-pilot.md)。
+
+R2-D1 新增 r2d_compare_budgets.py：以相同模型与相同提示的两份真实生成轨迹进行严谨的前缀一致性、截断及重复候选比较。详见 [R2-D1 实际审计](../docs/05-reproduction/r2d-run-20261106.md)。
