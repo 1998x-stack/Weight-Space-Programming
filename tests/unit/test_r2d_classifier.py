@@ -61,3 +61,17 @@ def test_diagnostic_prompts_valid_and_no_answers(tmp_path):
     ]}))
     with pytest.raises(ProbeError,match="extra fields"):
         load_public_diagnostic_prompts(p)
+
+
+def test_tokenizer_normalization_handles_one_text_batch():
+    from wsp.evaluate.trace_generation import normalize_prompt_ids
+    assert normalize_prompt_ids([2,3,4],max_input_tokens=10)==[2,3,4]
+    assert normalize_prompt_ids({"input_ids":[[2,3,4]],"attention_mask":[[1,1,1]]},
+                                max_input_tokens=10)==[2,3,4]
+    assert normalize_prompt_ids([[2,3,4]],max_input_tokens=10)==[2,3,4]
+    with pytest.raises(ProbeError,match="Unsupported tokenizer fields"):
+        normalize_prompt_ids({"input_ids":[2],"pixel_values":[1]},max_input_tokens=10)
+    with pytest.raises(ProbeError,match="length"):
+        normalize_prompt_ids([1]*11,max_input_tokens=10)
+    with pytest.raises(ProbeError,match="1D"):
+        normalize_prompt_ids([[1,2],[3,4]],max_input_tokens=10)

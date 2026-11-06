@@ -33,6 +33,37 @@ def load_public_diagnostic_prompts(path: str | Path) -> list[dict[str, str]]:
     return data["prompts"]
 
 
+
+def normalize_prompt_ids(raw: Any, *, max_input_tokens: int) -> list[int]:
+    """Handle standard HF list, BatchEncoding/dict or one-row tensor outputs.
+
+    Multiple tokenized examples and multimodal extra-input fields are refused
+    because this pilot intentionally supports one text prompt at a time.
+    """
+    original_type = type(raw).__name__
+    if hasattr(raw, "keys"):
+        keys = set(raw.keys())
+        if keys != {"input_ids"}:
+            # Some tokenizers also return an attention mask, which can be
+            # safely regenerated from the validated single text sequence.
+            if keys != {"input_ids", "attention_mask"}:
+                raise ProbeError(f"Unsupported tokenizer fields: {sorted(keys)}")
+        raw = raw["input_ids"]
+    if hasattr(raw, "tolist") and not isinstance(raw, list):
+        raw = raw.tolist()
+    if isinstance(raw, tuple):
+        raw = list(raw)
+    if isinstance(raw, list) and len(raw) == 1 and isinstance(raw[0], (list, tuple)):
+        raw = list(raw[0])
+    if (not isinstance(raw, list) or
+            any(type(i) is not int or i < 0 for i in raw)):
+        raise ProbeError(f"Tokenizer output not a 1D int sequence: {original_type}")
+    if not 1 <= len(raw) <= max_input_tokens:
+        raise ProbeError(
+            f"Tokenized prompt length {len(raw)} outside max_input_tokens "
+            f"{max_input_tokens} (source type {original_type})")
+    return raw
+
 def run_greedy_pilot(model, tokenizer, prompts: list[dict[str, str]], *,
                      device: str, max_new_tokens: int = 96,
                      max_input_tokens: int = 160) -> dict[str, Any]:
@@ -64,10 +95,7 @@ def run_greedy_pilot(model, tokenizer, prompts: list[dict[str, str]], *,
                 tokenize=True, add_generation_prompt=True, enable_thinking=True)
         except (AttributeError, TypeError, ValueError) as exc:
             raise ProbeError("Incompatible pinned tokenizer chat template") from exc
-        if (not isinstance(source_ids, list) or
-                any(type(i) is not int for i in source_ids) or
-                not 1 <= len(source_ids) <= max_input_tokens):
-            raise ProbeError("Tokenized prompt outside max_input_tokens")
+        source_ids = normalize_prompt_ids(source_ids, max_input_tokens=max_input_tokens)
         ids = torch.tensor([source_ids], dtype=torch.long, device=device)
         with torch.inference_mode():
             generated = model.generate(
