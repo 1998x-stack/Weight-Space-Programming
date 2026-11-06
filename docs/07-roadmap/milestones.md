@@ -29,6 +29,8 @@
 任务：4 组以上对照、层/MLP 归因、Top-K、α 扫描、随机方向对照、BF16 距离比较。  
 门禁：候选选择不泄漏作者最终掩码和 holdout；控制组审计齐全。
 
+**R2-D1 engineering phase (2026-11-06):** actual Qwen autoregressive trace capture, EOS/cut/repetition heuristic and bounded CI; results require real run. This does not satisfy R2 scientific rediscovery. [R2-D1](../05-reproduction/r2d-generation-pilot.md).
+
 ## M04 — R3: Agent Orchestration
 文件：src/wsp/agents/{planner,runner}.py, src/wsp/core/budget.py, src/wsp/artifacts/audit.py；测试：tests/security/。  
 任务：预算中止、No-Edit、工具访问控制、故障恢复和候选决策轨迹。  

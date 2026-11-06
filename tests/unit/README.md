@@ -12,3 +12,5 @@ R2-B: `test_r2b_contract.py` 是不需要 Torch 的输入/门禁测试；`test_r
 R2-C 新增 test_r2c_controls.py（稳定性、标签打乱方向、异常输入）。真实 Qwen workflow 和示意诊断库见 docs/05-reproduction/r2c-real-smoke.md；科学门禁另行验收。
 
 R2-C 首次真实官方模型工程 Smoke [Actions #42200064239](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42200064239) 已通过；合成代码检查 [#42200064091](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42200064091) 为 41 passed、1 skipped + PyTorch 4 passed。具体证据详见 [R2-C 审计](../../docs/05-reproduction/r2c-run-20261106.md)。
+
+R2-D1 添加 test_r2d_classifier.py（纯 CPU Token 截断/重复分类和诊断输入验证）、test_r2d_generation_torch.py（合成 Torch 推理接口）。不构成真实模型跑分。[R2-D1 协议](../../docs/05-reproduction/r2d-generation-pilot.md)。
