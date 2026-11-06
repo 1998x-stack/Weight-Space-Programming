@@ -47,9 +47,9 @@ def _correct(pred: str | None, gold: str) -> bool:
     if pred is None:
         return False
     from math_verify import parse, verify
-    g = parse('\\boxed{' + str(gold) + '}', parsing_timeout=5)
-    p = parse('\\boxed{' + pred + '}', parsing_timeout=5)
     try:
+        g = parse('\\boxed{' + str(gold) + '}', parsing_timeout=5)
+        p = parse('\\boxed{' + pred + '}', parsing_timeout=5)
         return bool(g and p and verify(g, p, timeout_seconds=5))
     except Exception:
         return False
