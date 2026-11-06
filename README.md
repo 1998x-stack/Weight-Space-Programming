@@ -1,7 +1,7 @@
 # Weight-Space Programming
 
 > **Research-first, evidence-driven, reproduction-ready.**  
-> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成；R2-A CPU 机制候选分析已实现；R2-B 官方 Qwen 激活采集和诊断前向干预工具已编写（真实模型运行待验证）**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
+> 权重空间编程（WSP）研究笔记、原始实验复现路线与模块化代码骨架。当前处于 **R1 Checkpoint Replay 验证成功、MATH-500 GPU 评测待完成；R2-A CPU 机制候选分析已实现；R2-B 工具已实现，R2-C 的官方 Qwen3.5 CPU forward smoke 已在 GitHub Actions 实际成功（Layer 15、四对手工诊断输入，非机制复现）**：BF16 稀疏重建、哈希校验、配对统计及 GPU 评测脚本已实现；GitHub Actions 已用官方 Qwen3.5-0.8B 指定 revision 和公开 p50c 补丁完成真实张量 SHA256 验证。但本仓库尚未生成独立 MATH-500 分数。
 
 [研究文档](docs/index.md) · [原始研究与证据](docs/02-original-study/source-audit.md) · [复现路线](docs/05-reproduction/roadmap.md) · [系统架构](docs/06-architecture/system.md) · [开发里程碑](docs/07-roadmap/milestones.md)
 
@@ -91,7 +91,7 @@ Weight-Space-Programming/
 └── scripts/                      # r1.py / r1_math500.py / r1_prepare_math500.py
 ```
 
-**实现状态：** R2-A 增加了纯 CPU 的 contrastive direction、neuron ranking、observational alignment、in-memory sparse proposal 与严格诊断输入 CLI；详见 [R2-A 实施与局限](docs/05-reproduction/r2-offline-implementation.md)。R2-B 已添加真实 PyTorch Qwen teacher-forcing hooks、BF16 基座校验、严格诊断输入和非破坏性前向干预工具；**尚无官方 Qwen R2-B 完整实验运行或机制复现证据**。详见 [R2-B 运行手册](docs/05-reproduction/r2b-activation-probe.md)。R1 CPU replay/paired statistics 已通过合成数据单元测试；真实 Qwen p50c 重建与张量哈希经 GitHub Actions 验证；GPU runner 已编写但尚未运行。除这三个 R1 模块之外，其他 src/ 子包仍是占位。没有训练、Agent、自主权重发现实现。
+**实现状态：** R2-A 增加了纯 CPU 的 contrastive direction、neuron ranking、observational alignment、in-memory sparse proposal 与严格诊断输入 CLI；详见 [R2-A 实施与局限](docs/05-reproduction/r2-offline-implementation.md)。R2-B 已添加真实 PyTorch Qwen teacher-forcing hooks、BF16 基座校验、严格诊断输入和非破坏性前向干预工具；**尚无官方 Qwen R2-B 完整实验运行或机制复现证据**。详见 [R2-B 运行手册](docs/05-reproduction/r2b-activation-probe.md)、[R2-C 执行说明](docs/05-reproduction/r2c-real-smoke.md)及[官方模型实际执行审计](docs/05-reproduction/r2c-run-20261106.md)。R1 CPU replay/paired statistics 已通过合成数据单元测试；真实 Qwen p50c 重建与张量哈希经 GitHub Actions 验证；GPU runner 已编写但尚未运行。除这三个 R1 模块之外，其他 src/ 子包仍是占位。没有训练、Agent、自主权重发现实现。
 
 ## R1 Quickstart (separate CPU replay and GPU benchmark)
 
@@ -139,4 +139,4 @@ R0/R2/R3/R4 的通用工程目标仍未完成；**R1 真实补丁已重建，但
 
 ---
 
-**Status:** R1 published tensor replay verified; R2-A offline analysis and R2-B probe/causal-hook tooling implemented; R1 GPU benchmark and R2 real mechanism validation not yet run · **Last reviewed:** 2026-11-06.
+**Status:** R1 official tensor replay verified; R2-A/R2-B implemented; R2-C genuine official Qwen fixed-input Layer-15 forward smoke verified (Actions #42200064239); R1 GPU benchmark and R2 scientific rediscovery not completed · **Last reviewed:** 2026-11-06.

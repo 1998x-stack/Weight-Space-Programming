@@ -1,0 +1,76 @@
+name: R2-C authentic Qwen3.5 CPU diagnostic smoke
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/r2c-authentic-smoke.yml"
+      - "scripts/r2c_real_smoke.py"
+      - "src/wsp/read/diagnostic_controls.py"
+      - "src/wsp/adapters/qwen.py"
+      - "src/wsp/read/activation_probe.py"
+      - "experiments/exp08_qwen_repair/diagnostic_smoke.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  official-qwen-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install CPU-only PyTorch
+        run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Install Qwen3.5 runtime without GPU dependencies
+        run: |
+          python -m pip install -e .
+          python -m pip install "transformers>=5.0,<6" "huggingface_hub>=0.35,<2" "accelerate>=1,<2" pillow
+      - name: Download authentic fixed-revision official Qwen3.5 checkpoint
+        run: |
+          python - <<'PY'
+          from huggingface_hub import snapshot_download
+          snapshot_download(
+              repo_id="Qwen/Qwen3.5-0.8B",
+              revision="2fc06364715b967f1860aea9cf38778875588b17",
+              local_dir="/tmp/wsp-r2c/base",
+              allow_patterns=["*.safetensors", "*.json", "*.jinja", "*.model", "*.txt"],
+          )
+          PY
+      - name: Run real teacher-forced hooks, offline candidate and diagnostic causal controls
+        run: |
+          python scripts/r2c_real_smoke.py \
+            --model /tmp/wsp-r2c/base \
+            --pairs experiments/exp08_qwen_repair/diagnostic_smoke.json \
+            --layer 15 --last-k 4 --max-input-tokens 128 \
+            --device cpu --confirm-compute \
+            --out /tmp/wsp-r2c/r2c-audit.json
+      - name: Validate audit scope and SHA provenance
+        run: |
+          python - <<'PY'
+          import json
+          a=json.load(open("/tmp/wsp-r2c/r2c-audit.json"))
+          assert a["status"] == "real_qwen_forward_smoke_not_mechanism_replication"
+          assert a["evidence_scope"] == "illustrative_diagnostic_pairs_only_not_observed_model_failure"
+          assert a["diagnostic_pair_count"] == 4
+          assert a["candidate"]["selected_column_count"] == 64
+          assert len(a["target_base_bf16_sha256"]) == 2
+          assert a["fixed_input_last_token"]["alpha_zero_kl"] >= 0
+          assert a["unmet_gates"]
+          print("R2-C authentic Qwen teacher-forced smoke passed; R2 scientific gate remains open.")
+          PY
+      - name: Upload sanitized audit only (no weights, probes, or prompts)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2c-real-smoke-audit-only
+          path: /tmp/wsp-r2c/r2c-audit.json
+          retention-days: 14
