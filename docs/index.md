@@ -24,4 +24,4 @@
 没有将作者未公开的 Harness 代码包装成完整开源；不把“达到 token 上限”全部等同“数学不懂”；不把修复循环写成注入知识；不把低修改比例理解成低扰动；不将未运行的实验写成成功。阅读者应当能够追溯每个关键数字到源文件。
 
 ## 项目状态
-R1 更新：公开 Qwen p50c 补丁已在 GitHub Actions 上对官方权重实际校验成功（[运行证据](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42187045405)）；R1 MATH-500 GPU benchmark 尚未执行。R2-A 的 CPU 机制候选工具已实现并通过合成测试，但真实 Qwen activation probing、因果实验与 R2 研究门禁均未完成。详细请见 [R2-A 离线工具说明](05-reproduction/r2-offline-implementation.md) 和 [R2-B Qwen 探针与干预实现](05-reproduction/r2b-activation-probe.md)；后者已实现工具代码，但未验证真实 Qwen forward 或科学复现。其余模块仍保留占位。
+R1 更新：公开 Qwen p50c 补丁已在 GitHub Actions 上对官方权重实际校验成功（[运行证据](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42187045405)）；R1 MATH-500 GPU benchmark 尚未执行。R2-A 的 CPU 机制候选工具已实现并通过合成测试，但真实 Qwen activation probing、因果实验与 R2 研究门禁均未完成。详细请见 [R2-A 离线工具说明](05-reproduction/r2-offline-implementation.md) 和 [R2-B Qwen 探针与干预实现](05-reproduction/r2b-activation-probe.md)、[R2-C 官方模型诊断 Smoke](05-reproduction/r2c-real-smoke.md)；后者已实现工具代码，但未验证真实 Qwen forward 或科学复现。其余模块仍保留占位。

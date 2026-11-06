@@ -20,6 +20,8 @@
 
 ## M03 — R2: Mechanistic Rediscovery
 
+**R2-C (2026-11-06):** official-pinned-weight CPU smoke workflow, illustrative diagnostic corpus and descriptive random/label-swap controls have been implemented. Authentic execution and results must be verified from Actions; this is not complete R2 rediscovery. See [R2-C runbook](../05-reproduction/r2c-real-smoke.md).
+
 **R2-B engineering progress (2026-11-06):** Qwen loader with strict published base-target SHA checks, real teacher-forced decoder/MLP hooks, diagnostic NPZ collector, fixed-token non-destructive MLP-output interventions and PyTorch synthetic integration tests. See [R2-B runbook](../05-reproduction/r2b-activation-probe.md). Authentic Qwen forward, independent contrast data and full R2 causal/benchmark validation remain pending.
 
 **R2-A CPU engineering progress (2026-11-06):** implemented contrastive-direction estimation, leave-one-pair-out stability, signed MLP neuron ranking, descriptive layer alignment, in-memory masked projection proposals, diagnostic-only NPZ CLI and synthetic unit tests. See [R2-A runbook](../05-reproduction/r2-offline-implementation.md). **No real teacher-forced Qwen probes, causal forward interventions or R2 scientific gate have been completed.**
