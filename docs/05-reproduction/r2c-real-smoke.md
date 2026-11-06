@@ -35,4 +35,4 @@
 
 ## 运行记录
 
-工程代码与工作流位于 R2-C PR。仅在 Actions 真正完成之后填写 run ID、准确测试数量和具体结果。
+**2026-11-06 已真实执行并成功**：[Actions #42200064239](https://github.com/1998x-stack/Weight-Space-Programming/actions/runs/42200064239)，审计 artifact #13492729801。Layer 15 Hook、四对示意诊断输入、R2-A Top64、alpha=0/目标/随机方向固定 logits 对照均成功；CPU/Transformers 版本、定量数据、SHA 与未满足门禁详见 [实际执行记录](r2c-run-20261106.md)。本轮仅满足工程 smoke B1，不属于机制发现或数学评分复现。
